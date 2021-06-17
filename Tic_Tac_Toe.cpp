@@ -1,160 +1,148 @@
 #include<bits/stdc++.h>
 using namespace std;
-#define int long
-const long N=10;
 
-// ok=0 means first player (X)
-// ok=1 means second player (O)
-
+#define endl    "\n"
+const int N=10;
 int ok=0;
-vector<char> grid(N);
+
 char Human,Bot;
+vector<char> grid(N);
 
-void initilize_board(){
+void initilize_grid(){
     for(int i=1;i<N;i++){
-        grid[i]=('0'+i);
+        grid[i]=(char(i+'0'));
     }
 }
 
-bool is_continue(){
-    // check grid is full or not
-    for(int i=1;i<N;i++){
-        if(grid[i]!='X' and grid[i]!='O')return true;
-    }
-    return false;
-}
-
-void print_board(){
+void print_grid(){
     cout<<endl;
-    for(int i=1;i<N;i++){
-        if( i!=1 and (i-1)%3==0){
-            cout<<endl; 
-            cout<<"---------";
-            cout<<endl;
-        }
-        cout<<grid[i];
-        if(i%3!=0) cout<<" | ";
-    }cout<<endl;
+    cout<<grid[1]<<" | "<<grid[2]<<" | "<<grid[3]<<endl;
+    cout<<"---------"<<endl;
+
+    cout<<grid[4]<<" | "<<grid[5]<<" | "<<grid[6]<<endl;
+    cout<<"---------"<<endl;
+
+    cout<<grid[7]<<" | "<<grid[8]<<" | "<<grid[9]<<endl;
+    cout<<endl;
 }
 
-bool is_valid_move(int response){
-    if(response<N and response>0 and (grid[response]!='X' or grid[response]!='O')){
-        return true;
+bool is_Continue(){
+    for(int i=1;i<N;i++){
+        if(grid[i]!='X' && grid[i]!='O') return true;
     }
+
     return false;
 }
 
 int is_win(){
-
-    // -10 if You win, 10 if computer win and 0 if tie
-
     for(int i=1;i<N;i+=3){
-        if(grid[i]==Human and grid[i+1]==Human and grid[i+2]==Human)return -10;
-        if(grid[i]==Bot and grid[i+1]==Bot and grid[i+2]==Bot)return 10;
+        if(grid[i]==Human && grid[i+1]==Human && grid[i+2]==Human) return (-10);
+        if(grid[i]==Bot && grid[i+1]==Bot && grid[i+2]==Bot) return (10);
     }
 
     for(int i=1;i<=3;i++){
-        if(grid[i]==Human and grid[i+3]==Human and grid[i+6]==Human)return -10;
-        if(grid[i]==Bot and grid[i+3]==Bot and grid[i+6]==Bot)return 10;
+        if(grid[i]==Human && grid[i+3]==Human && grid[i+6]==Human) return (-10);
+        if(grid[i]==Bot && grid[i+3]==Bot && grid[i+6]==Bot) return (10);
     }
 
-    if(grid[1]==Human and grid[5]==Human and grid[9]==Human)return -10;
-    if(grid[1]==Bot and grid[5]==Bot and grid[9]==Bot)return 10;
+    if(grid[1]==Human && grid[5]==Human && grid[9]==Human) return (-10);
+    if(grid[1]==Bot && grid[5]==Bot && grid[9]==Bot) return (10);
 
-    if(grid[3]==Human and grid[5]==Human and grid[7]==Human)return -10;
-    if(grid[3]==Bot and grid[5]==Bot and grid[7]==Bot)return 10;
-    
+    if(grid[3]==Human && grid[5]==Human && grid[7]==Human) return (-10);
+    if(grid[3]==Bot && grid[5]==Bot && grid[7]==Bot) return (10);
+
     return 0;
 }
 
-int minimax_Algo(bool ismax){
+int Minimax_Algo(bool Is_Max){
 
     int score=is_win();
-    if(score==10 or score==-10) return score;
-    if(!is_continue()) return 0;
+    if(score==(10) || score==(-10)) return score;
+    if(!is_Continue()) return 0;
 
-    if(ismax){
-        // computer
-        int best=-1e5;
+    if(Is_Max){
+        int best_score=INT_MIN;
 
         for(int i=1;i<N;i++){
-            if(grid[i]!='X' and grid[i]!='O'){
-                char initially=grid[i];
+            if(grid[i]!='X' && grid[i]!='O'){
+
+                char store=grid[i];
 
                 grid[i]=Bot;
-                best=max(best,minimax_Algo(!ismax));
+                best_score=max(best_score,Minimax_Algo(!Is_Max));
 
-                grid[i]=initially;
-
+                grid[i]=store;
             }
         }
-        return best;
-    }
-    else{
-        // player
-        int best=1e5;
+
+        return best_score;
+
+    }else{
+        int best_score=INT_MAX;
 
         for(int i=1;i<N;i++){
-            if(grid[i]!='X' and grid[i]!='O'){
-                char initially=grid[i];
+            if(grid[i]!='X' && grid[i]!='O'){
+
+                char store=grid[i];
 
                 grid[i]=Human;
-                best=min(best,minimax_Algo(!ismax));
+                best_score=min(best_score,Minimax_Algo(!Is_Max));
 
-                grid[i]=initially;
-
+                grid[i]=store;
             }
         }
-        return best;
+
+        return best_score;
     }
 }
 
-int computer(){
+int Computer_turn(){
 
-    int best=-1e6;
-    int index=-1;
+    int best_score=INT_MIN,position=-1;
 
     for(int i=1;i<N;i++){
-        if(grid[i]!='X' and grid[i]!='O'){
-            char initially=grid[i];
+        if(grid[i]!='X' && grid[i]!='O'){
+
+            char store=grid[i];
 
             grid[i]=Bot;
-            int curr_move_score=minimax_Algo(false);
+            int curr_score=Minimax_Algo(false);
 
-            // undo step
-            grid[i]=initially;
+            grid[i]=store;
 
-            if(curr_move_score>best){
-                best=curr_move_score;
-                index=i;
+            if(curr_score>best_score){
+                best_score=curr_score;
+                position=(i);
             }
         }
     }
 
-    return index;
+    return position;
 }
 
-void perform_move(){
+bool valid_move(int position){
+    return (position<N && position>0 && grid[position]!='X' && grid[position]!='O');
+}
 
+void Perform_move(){
     while(true){
 
         int take_response;
 
         if(!ok){
-            cout<<"Your Turn: ";
+            cout<<"YOUR TURN: ";
             cin>>take_response;
-        }
-        else{
-            cout<<"Computer Turn: ";
-            take_response=computer();
+        }else{
+            cout<<"COMPUTER TURN: ";
+            take_response=Computer_turn();
             cout<<take_response;
         }
 
-        if(!is_valid_move(take_response)){
-            cout<<"Invalid Move, Enter again!!";cout<<endl;
-        }
-        else{
-            grid[take_response]=(ok==0?Human:Bot);
+        if(!valid_move(take_response)){
+            cout<<"INVALID MOVE, ENTER AGAIN!!"<<endl;
+        }else{
+            if(ok) grid[take_response]=Bot;
+            else grid[take_response]=Human;
             break;
         }
     }
@@ -162,42 +150,44 @@ void perform_move(){
     ok=1-ok;
 }
 
+void Tic_Tac_Toe(){
 
-void solve(){
+    initilize_grid();
+    print_grid();
 
+    while(is_Continue()){
 
-    initilize_board();
-    print_board();
-    
-    while(is_continue()){
+        Perform_move();
+        print_grid();
 
-        perform_move();
-        print_board();
-
-        if(is_win()==10){
-            cout<<"COMPUTER WIN!!";cout<<endl; 
-            print_board();return;
+        if(is_win()==(10)){
+            cout<<"COMPUTER WINS!"<<endl;
+            print_grid();
+            return;
         }
-        else if(is_win()==-10){
-            cout<<"YOU WIN!!";cout<<endl;
-            print_board(); return;
+
+        if(is_win()==(-10)){
+            cout<<"YOU WIN!"<<endl;
+            print_grid();
+            return;
         }
-        
     }
 
-    cout<<"GAME DRAW!!"<<endl;
+    cout<<"GAME DRAW!"<<endl;
 
-    print_board();
+    print_grid();
+    return;
 }
 
-signed main(){
+int main(){
 
     cout<<"Which symbol (X or O, X goes first)? ";
     cin>>Human;
 
-    ok=(Human=='X'?0:1);
+    if(Human=='O') ok=1,Bot='X';
+    else Bot='O';
 
-    Bot=(Human=='X'?'O':'X');
-    
-    solve();
+    Tic_Tac_Toe();
+
+    return 0;
 }
