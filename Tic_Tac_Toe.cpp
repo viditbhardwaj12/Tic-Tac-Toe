@@ -46,21 +46,23 @@ bool is_valid_move(int response){
 
 int is_win(){
 
+    // -10 if You win, 10 if computer win and 0 if tie
+
     for(int i=1;i<N;i+=3){
-        if(grid[i]=='X' and grid[i+1]=='X' and grid[i+2]=='X') return -10;
-        if(grid[i]=='O' and grid[i+1]=='O' and grid[i+2]=='O') return 10;
+        if(grid[i]==Human and grid[i+1]==Human and grid[i+2]==Human)return -10;
+        if(grid[i]==Bot and grid[i+1]==Bot and grid[i+2]==Bot)return 10;
     }
 
     for(int i=1;i<=3;i++){
-        if(grid[i]=='X' and grid[i+3]=='X' and grid[i+6]=='X') return -10;
-        if(grid[i]=='O' and grid[i+3]=='O' and grid[i+6]=='O') return 10;
+        if(grid[i]==Human and grid[i+3]==Human and grid[i+6]==Human)return -10;
+        if(grid[i]==Bot and grid[i+3]==Bot and grid[i+6]==Bot)return 10;
     }
 
-    if(grid[1]=='X' and grid[5]=='X' and grid[9]=='X') return -10;
-    if(grid[1]=='O' and grid[5]=='O' and grid[9]=='O') return 10;
+    if(grid[1]==Human and grid[5]==Human and grid[9]==Human)return -10;
+    if(grid[1]==Bot and grid[5]==Bot and grid[9]==Bot)return 10;
 
-    if(grid[3]=='X' and grid[5]=='X' and grid[7]=='X') return -10;
-    if(grid[3]=='O' and grid[5]=='O' and grid[7]=='O') return 10;
+    if(grid[3]==Human and grid[5]==Human and grid[7]==Human)return -10;
+    if(grid[3]==Bot and grid[5]==Bot and grid[7]==Bot)return 10;
     
     return 0;
 }
